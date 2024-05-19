@@ -2,10 +2,15 @@ document.addEventListener("DOMContentLoaded", (event) => {
     console.log("DOM fully loaded and parsed");
 
     // DOM elements
+    let gameWrap = document.getElementById('hexagonGame');
     let tileGrid = document.querySelector('.tile-grid');
     let tileElements = tileGrid.querySelectorAll('.tile-grid .tile');
+    let btnPrimary = document.getElementById('btnPrimary');
+    let countdown = document.getElementById('countdown');
+    let targetView = document.getElementById('target');
 
     // Logic variables
+    let gameState = 'idle';
     let target = 0;
     let tileValues = [];
     let activeTiles = [];
@@ -44,7 +49,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
         [9, 14, 18]
     ];
 
-    generateRound();
     addListeners();
 
     function generateRound() {
@@ -135,7 +139,30 @@ document.addEventListener("DOMContentLoaded", (event) => {
             }
             return false; 
         }
-        
+
+        btnPrimary.addEventListener('click', () => {
+            if(gameWrap.classList.contains('idle')) {
+                generateRound();
+                gameWrap.classList.remove('idle');
+                gameWrap.classList.add('countdown');
+                startMemoryCountdown();
+            }
+        });
     }
+
+    function startMemoryCountdown() {
+        countdown.innerHTML = 30;
+
+        let countdownInterval = setInterval(() => {
+            countdown.innerHTML -= 1; 
+
+            if(countdown.innerHTML == 0) {
+                clearInterval(countdownInterval);
+            }
+
+        }, 1000);
+    }
+
+    
 
 });
