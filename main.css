@@ -1,0 +1,63 @@
+h1 {
+    text-align: center;
+}
+
+/* The tile grid */
+.tile-grid {
+    display: flex;
+    flex-wrap: wrap;
+    width: 250px;
+    margin: 60px auto;
+}
+
+.tile {
+    width: 50px;
+    height: 46px;
+    position: relative;
+    line-height: 54px;
+    text-align: center;
+    user-select: none;
+    cursor: pointer;
+    transition: transform .2s ease;
+}
+
+.tile-grid.comboed .tile.active {
+    transform: scale(1.22);
+}
+
+.tile::before {
+    content: '\2b22';
+    font-size: 64px;
+    font-weight: 900;
+    line-height: 50px;
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    top: 0;
+    left: 0;
+    color: #efefef;
+    z-index: -1;
+}
+
+.tile:hover::before {
+    color: #ddd;
+}
+
+
+.tile.active::before {
+    color: #e8e9ad;
+}
+
+.spacer {
+    width: 50px;
+}
+
+.spacer-half {
+    width: 25px;
+}
+
+/* Other UI */
+.submit {
+    display: block;
+    margin: 0 auto;
+}
