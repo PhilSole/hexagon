@@ -1,4 +1,19 @@
+/* Custom properties */
+:root {
+    --color-text: #444;
+    --color-text-hover: #222;
+    --color-bg-light: #eaeaea;
+    --color-bg-light-hover: #ddd;
+    --color-active: rgb(215,255,117);
+    --color-comboed: rgb(68,211,183);
+}
+
 /* Elements */
+body {
+    font-family: open-sans, sans-serif;
+    color: var(--color-text);
+}
+
 h1 {
     text-align: center;
 }
@@ -7,54 +22,58 @@ h1 {
 .tile-grid {
     display: flex;
     flex-wrap: wrap;
-    width: 250px;
-    margin: 60px auto;
+    width: 300px;
+    margin: 45px auto 60px;
 }
 
 .tile {
-    width: 50px;
-    height: 46px;
+    width: 60px;
+    height: 52px;
     position: relative;
     line-height: 54px;
     text-align: center;
     user-select: none;
     cursor: pointer;
     transition: transform .2s ease;
+    pointer-events: none;
+    font-size: 1.25rem;
+    font-weight: bold;
 }
 
-.tile-grid.comboed .tile.active {
-    transform: scale(1.22);
+.tile-grid.comboed .tile.active::before {
+    color: var(--color-comboed);
 }
 
 .tile::before {
     content: '\2b22';
-    font-size: 64px;
+    font-size: 80px;
     font-weight: 900;
-    line-height: 50px;
+    line-height: 48px;
     position: absolute;
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 52px;
     top: 0;
-    left: 0;
-    color: #efefef;
+    left: -3px;
+    color: var(--color-bg-light);
     z-index: -1;
+    transition: color .4s ease;
 }
 
 .tile:hover::before {
-    color: #ddd;
+    color: var(--color-bg-light-hover);
 }
 
 
 .tile.active::before {
-    color: #e8e9ad;
+    color: var(--color-active);
 }
 
 .spacer {
-    width: 50px;
+    width: 60px;
 }
 
 .spacer-half {
-    width: 25px;
+    width: 30px;
 }
 
 /* UI */
@@ -62,9 +81,26 @@ h1 {
     display: block;
     margin: 0 auto;
     cursor: pointer;
+    border: none;
+    padding: 12px 18px;
+    color: var(--color-text);
+    background: linear-gradient(90deg, rgba(215,255,117,1) 0%, rgba(68,211,183,1) 100%);
+    text-transform: uppercase;
+    border-radius: 8px;
+    font-weight: bold;
+    letter-spacing: .1em;
+    background-size: calc(100% + 40px);
+    background-position: 0px;
+    transition: background-position .4s ease, color .4s ease;
+}
+
+#btnPrimary:hover {
+    background-position: -40px;
+    color: var(--color-text-hover);
 }
 
 #countdown {
+    display: none;
     padding: 12px 18px;
     margin: 0 auto;
     border-radius: 12px;
@@ -76,15 +112,57 @@ h1 {
     right: 18px;
 }
 
+#target {
+    display: none;
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    padding: 18px;
+    border: 1px solid;
+    width: 84px;
+    height: 84px;
+    border-radius: 12px;
+    margin: 3rem auto 0;
+}
+
+#points {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    padding: 18px;
+    border: 1px solid;
+    width: 84px;
+    height: 84px;
+    border-radius: 12px;
+    position: absolute;
+    top: 18px;
+    left: 18px;
+}
+
 /* Game states */
-#hexagonGame.idle #countdown {
+#hexagonGame.memorising #btnPrimary {
     display: none;
 }
 
-#hexagonGame.countdown #btnPrimary {
-    display: none;
-}
-
-#hexagonGame.countdown #countdown {
+#hexagonGame.memorising #countdown, #hexagonGame.recall #countdown {
     display: block;
 }
+
+#hexagonGame.recall .tile {
+    pointer-events: all;
+}
+
+#hexagonGame.recall #btnPrimary {
+    opacity: .33;
+    pointer-events: none;
+}
+
+#hexagonGame.recall #target {
+    display: block;
+}
+
+#hexagonGame:has(.comboed) #btnPrimary {
+    opacity: 1;
+    pointer-events: all;
+}
+

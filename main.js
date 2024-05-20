@@ -3,17 +3,20 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
     // DOM elements
     let gameWrap = document.getElementById('hexagonGame');
-    let tileGrid = document.querySelector('.tile-grid');
+    let tileGrid = gameWrap.querySelector('.tile-grid');
     let tileElements = tileGrid.querySelectorAll('.tile-grid .tile');
     let btnPrimary = document.getElementById('btnPrimary');
     let countdown = document.getElementById('countdown');
     let targetView = document.getElementById('target');
+    let pointsView = document.getElementById('points');
 
     // Logic variables
     let gameState = 'idle';
     let target = 0;
     let tileValues = [];
     let activeTiles = [];
+    let points = 0;
+    let correctCombinations = [];
 
     // Game constants
     const validCombinations = [
@@ -49,15 +52,19 @@ document.addEventListener("DOMContentLoaded", (event) => {
         [9, 14, 18]
     ];
 
+    console.log(validCombinations);
+
+    // Game settings
+    let TIME_MEMORY = 10;
+    let TIME_RECALL = 90;
+
     addListeners();
 
     function generateRound() {
         target = getRandomInt(5, 16);
         tileValues = generateRandomTileStack();
 
-        console.log(target, tileValues);
-
-        updateView();
+        startMemorising();
     } 
 
     function getRandomInt(min, max) {
@@ -87,20 +94,81 @@ document.addEventListener("DOMContentLoaded", (event) => {
         }   
         
         if(combinationsFound.length > 3) {
-            console.log(combinationsFound);
             return possibleTileValues;
         } else {
             return generateRandomTileStack();
         }
     }  
     
-    function updateView() {
+    function startMemorising() {
+        gameState = 'memorising';
+
         for(let i = 0; i < tileValues.length; i++) {
             tileElements[i].innerHTML = tileValues[i];
         }
+
+        gameWrap.classList.remove('idle');
+        gameWrap.classList.add('memorising');
+
+        countdown.innerHTML = TIME_MEMORY;
+
+        let countdownInterval = setInterval(() => {
+            countdown.innerHTML -= 1; 
+
+            if(countdown.innerHTML == 0) {
+                clearInterval(countdownInterval);
+                startRecall();
+            }
+
+        }, 1000);
     }
 
+    function startRecall() {
+        gameState = 'recall';
+
+        // for(let i = 0; i < tileValues.length; i++) {
+        //     tileElements[i].innerHTML = '';
+        // }
+
+        btnPrimary.innerHTML = 'Submit';
+        targetView.innerHTML = target;
+
+        gameWrap.classList.remove('memorising');
+        gameWrap.classList.add('recall');
+
+        countdown.innerHTML = TIME_RECALL;
+
+        let countdownInterval = setInterval(() => {
+            countdown.innerHTML -= 1; 
+
+            if(countdown.innerHTML == 0) {
+                clearInterval(countdownInterval);
+                startResults();
+            }
+
+        }, 1000);        
+    }
+
+    function startResults() {
+        gameState = 'results';
+
+        console.log('start results');
+    }    
+
     function addListeners() {
+        // Primary button
+        btnPrimary.addEventListener('click', () => {
+            switch (gameState) {
+                case 'idle':
+                    generateRound();
+                    break;
+                case 'recall':
+                    handleSubmission();
+                default:
+                    break;
+            }
+        });
+
         // The tiles
         tileElements.forEach((tile, i) => {
             tile.addEventListener('click', () => {
@@ -139,30 +207,50 @@ document.addEventListener("DOMContentLoaded", (event) => {
             }
             return false; 
         }
-
-        btnPrimary.addEventListener('click', () => {
-            if(gameWrap.classList.contains('idle')) {
-                generateRound();
-                gameWrap.classList.remove('idle');
-                gameWrap.classList.add('countdown');
-                startMemoryCountdown();
-            }
-        });
     }
 
-    function startMemoryCountdown() {
-        countdown.innerHTML = 30;
+    function handleSubmission() {
 
-        let countdownInterval = setInterval(() => {
-            countdown.innerHTML -= 1; 
-
-            if(countdown.innerHTML == 0) {
-                clearInterval(countdownInterval);
+        let submissionIndex = -1;
+        for (let i = 0; i < validCombinations.length; i++) {
+            if (arraysAreEqual(validCombinations[i], activeTiles)) {
+                submissionIndex = i;
+                break;
             }
+        }
 
-        }, 1000);
-    }
-
+        
+        if(correctCombinations.indexOf(submissionIndex) >= 0) {
+            console.log('already guessed');
+        } else {
+            let combinationSum = 0;
+            for(let i = 0; i < activeTiles.length; i++) {
+                combinationSum += tileValues[activeTiles[i]];
+            }
     
+            if(combinationSum == target) {
+                console.log('correct');
+                points += 1;
+                correctCombinations.push(submissionIndex);
+            } else {
+                console.log('wrong');
+                points -= 1;
+            }
+    
+            pointsView.innerHTML = points;
+        }
+
+
+
+
+        function arraysAreEqual(arr1, arr2) {
+            for (let i = 0; i < arr1.length; i++) {
+                if (arr1[i] !== arr2[i]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
 
 });
