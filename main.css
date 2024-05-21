@@ -1,47 +1,70 @@
 /* Custom properties */
 :root {
-    --color-text: #444;
-    --color-text-hover: #222;
-    --color-bg-light: #eaeaea;
-    --color-bg-light-hover: #ddd;
+    --color-text: #b9b9b9;
+    --color-text-button: #535353;
+    --color-bg-dark: #232323;
+    --color-bg-light-hover: #959595;
     --color-active: rgb(215,255,117);
-    --color-comboed: rgb(68,211,183);
+    --color-correct: rgb(68,211,183);
+    --color-wrong: rgb(211, 68, 104);
+    --color-found: #444;
 }
 
 /* Elements */
 body {
-    font-family: open-sans, sans-serif;
+    font-family: "Nunito", sans-serif;
     color: var(--color-text);
+    background-color: var(--color-bg-dark);
 }
 
 h1 {
     text-align: center;
+    font-size: 3rem;
+    font-family: "Lora", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+}
+
+h2 {
+    text-align: center;
+    font-weight: 400;
+    letter-spacing: .1em;
+    font-size: 1.25rem;
+}
+
+p {
+    max-width: 540px;
+    margin: 2em auto;
+}
+
+/* The game wrap */
+#hexagonGame {
+    padding: 18px;
 }
 
 /* The tile grid */
-.tile-grid {
+#tileGrid {
     display: flex;
     flex-wrap: wrap;
     width: 300px;
     margin: 45px auto 60px;
+    position: relative;
+    /* z-index: 1; */
 }
 
 .tile {
     width: 60px;
-    height: 52px;
+    height: 53px;
     position: relative;
-    line-height: 54px;
+    line-height: 48px;
     text-align: center;
     user-select: none;
     cursor: pointer;
-    transition: transform .2s ease;
     pointer-events: none;
-    font-size: 1.25rem;
-    font-weight: bold;
-}
-
-.tile-grid.comboed .tile.active::before {
-    color: var(--color-comboed);
+    font-size: 1.33rem;
+    font-weight: 900;
+    color: var(--color-bg-dark);
 }
 
 .tile::before {
@@ -51,21 +74,52 @@ h1 {
     line-height: 48px;
     position: absolute;
     width: 60px;
-    height: 52px;
+    height: 53px;
     top: 0;
     left: -3px;
-    color: var(--color-bg-light);
+    color: var(--color-text);
     z-index: -1;
-    transition: color .4s ease;
+    transition: color .3s linear;
 }
 
 .tile:hover::before {
     color: var(--color-bg-light-hover);
+    transition: color .3s linear;
 }
-
 
 .tile.active::before {
     color: var(--color-active);
+    transition: color .2s linear;
+}
+
+#tileGrid.comboed .tile.active::before {
+    transition: color .1s linear;
+}
+
+/* Correct animation */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.tile.correct::before {
+    color: var(--color-correct);
+    animation: pulse 0.5s infinite alternate;
+}
+
+.tile.wrong::before {
+    color: var(--color-wrong);
+}
+
+.tile.found::before {
+    color: var(--color-found);
 }
 
 .spacer {
@@ -83,20 +137,21 @@ h1 {
     cursor: pointer;
     border: none;
     padding: 12px 18px;
-    color: var(--color-text);
+    color: var(--color-text-button);
     background: linear-gradient(90deg, rgba(215,255,117,1) 0%, rgba(68,211,183,1) 100%);
     text-transform: uppercase;
     border-radius: 8px;
-    font-weight: bold;
+    font-weight: 900;
     letter-spacing: .1em;
     background-size: calc(100% + 40px);
     background-position: 0px;
     transition: background-position .4s ease, color .4s ease;
+    outline: none;
 }
 
 #btnPrimary:hover {
     background-position: -40px;
-    color: var(--color-text-hover);
+    color: var(--color-bg-dark);
 }
 
 #countdown {
