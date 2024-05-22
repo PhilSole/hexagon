@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     ];
 
     // Game settings
-    let TIME_MEMORY = 30;
+    let TIME_MEMORY = 10;
     let TIME_RECALL = 90;
 
     addListeners();
@@ -68,6 +68,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
                     break;
                 case 'recall':
                     handleSubmission();
+                    break;
+                case 'results':
+                    generateRound();
                 default:
                     break;
             }
@@ -119,6 +122,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
     function generateRound() {
         target = getRandomInt(5, 16);
         tileValues = generateRandomTileStack();
+
+        console.log(target, tileValues);
 
         startMemorising();
     } 
@@ -208,11 +213,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
     function startResults() {
         gameState = 'results';
 
-        console.log('start results');
-
         for(let i = 0; i < tileValues.length; i++) {
-            tileElements[i].innerHTML = '';
+            tileElements[i].innerHTML = tileValues[i];
         }
+
+        btnPrimary.innerHTML = 'Start';
+
+        gameWrap.classList.remove('recall');
+        gameWrap.classList.add('results');
     }    
 
     function handleSubmission() {
@@ -291,7 +299,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 tileElements.forEach(tile => {
                     tile.classList.remove(feedback)
                 });
-            }, 1000);            
+            }, 1500);            
 
             // More slowly, remove the feedback message
             setTimeout(() => {
@@ -307,8 +315,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
             tileGrid.classList.remove('comboed');
             activeTiles = [];
         }
-
-
     }
 
 });
