@@ -53,8 +53,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
     ];
 
     // Game settings
-    let TIME_MEMORY = 10;
-    let TIME_RECALL = 30;
+    let TIME_MEMORY = 45;
+    let TIME_RECALL = 60;
 
     initIdleView();
     addListeners();

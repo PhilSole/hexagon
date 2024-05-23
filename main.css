@@ -35,7 +35,7 @@ h2 {
     text-align: center;
     font-weight: 400;
     letter-spacing: .1em;
-    font-size: 1.125rem;
+    font-size: 1rem;
     margin: 0;
 }
 
@@ -53,61 +53,51 @@ p {
 
 /* The game wrap */
 #hexagonGame {
-    padding: 18px;
+    padding: 24px 18px;
 }
 
 /* The tile grid */
 #tileGrid {
     display: flex;
-    flex-wrap: wrap;
-    width: 300px;
-    margin: 36px auto;
+    flex-direction: column;
+    margin: 36px auto 48px;
     position: relative;
 }
 
+.tile-row {
+    display: flex;
+    justify-content: center;
+}
+
+.tile-row + .tile-row {
+    margin-top: -10px;
+}
+
 .tile {
-    width: 60px;
-    height: 53px;
-    position: relative;
-    line-height: 48px;
+    width: 55px;
+    height: 63px;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    margin: 0 3px;
+    line-height: 63px;
     text-align: center;
     user-select: none;
     cursor: pointer;
     pointer-events: none;
-    font-size: 1.33rem;
+    font-size: 1.5rem;
     font-weight: 900;
     color: var(--color-bg-dark);
-}
-
-.tile::before {
-    content: '\2b22';
-    font-size: 80px;
-    font-weight: 900;
-    line-height: 48px;
-    position: absolute;
-    width: 60px;
-    height: 53px;
-    top: 0;
-    left: -3px;
-    color: var(--color-text);
-    z-index: -1;
-    transition: color .3s linear;
+    background-color: var(--color-text);
+    transition: background-color .2s linear;
 }
 
 @media (hover: hover) {
-    .tile:hover::before {
-        color: var(--color-bg-light-hover);
-        transition: color .3s linear;
+    .tile:hover {
+        background-color: var(--color-bg-light-hover);
     }
 }
 
-.tile.active::before {
-    color: var(--color-active);
-    transition: color .2s linear;
-}
-
-#tileGrid.comboed .tile.active::before {
-    transition: color .1s linear;
+.tile.active {
+    background-color: var(--color-active);
 }
 
 /* Correct animation */
@@ -123,25 +113,17 @@ p {
     }
 }
 
-.tile.correct::before {
-    color: var(--color-correct);
+.tile.correct {
+    background-color: var(--color-correct);
     /* animation: pulse 0.75s infinite alternate; */
 }
 
-.tile.wrong::before {
-    color: var(--color-wrong);
+.tile.wrong {
+    background-color: var(--color-wrong);
 }
 
-.tile.found::before {
-    color: var(--color-found);
-}
-
-.spacer {
-    width: 60px;
-}
-
-.spacer-half {
-    width: 30px;
+.tile.found {
+    background-color: var(--color-found);
 }
 
 /* UI */
@@ -182,14 +164,11 @@ p {
 }
 
 .countdown-wrap, .target-wrap, .points-wrap {
+    display: none;
     width: 33.33%;
     padding: 0 12px;
     font-size: 1.5rem;
     font-weight: 900;
-}
-
-.target-wrap, .points-wrap {
-    display: none;
 }
 
 #feedback {
