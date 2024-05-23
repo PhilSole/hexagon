@@ -3,17 +3,20 @@
     --color-text: #b9b9b9;
     --color-text-button: #535353;
     --color-bg-dark: #232323;
-    --color-bg-light-hover: #959595;
-    --color-active: rgb(215,255,117);
-    --color-correct: rgb(68,211,183);
-    --color-wrong: rgb(211, 68, 104);
+    --color-bg-light-hover: #777777;
+    --color-active: #D7FF75;
+    --color-correct: #44D3B7;
+    --color-wrong: #D34468;
     --color-found: #444;
-    --font-family-main: "Lora", serif;
+    --color-gradient-main: linear-gradient(90deg, #D7FF75 0%, #44D3B7 100%);
+    --color-gradient-grey: linear-gradient(90deg, #575656 0%, #8b8b8b 100%);
+    --font-family-heading: "Lora", serif;
+    --font-family-main: "Nunito", sans-serif;
 }
 
 /* Elements */
 body {
-    font-family: "Nunito", sans-serif;
+    font-family: var(--font-family-main);
     color: var(--color-text);
     background-color: var(--color-bg-dark);
 }
@@ -21,7 +24,7 @@ body {
 h1 {
     text-align: center;
     font-size: 2.75rem;
-    font-family: var(--font-family-main);
+    font-family: var(--font-family-heading);
     font-optical-sizing: auto;
     font-weight: 600;
     font-style: normal;
@@ -38,9 +41,9 @@ h2 {
 
 h3 {
     text-align: center;
-    font-weight: 400;
     letter-spacing: .1em;
     font-size: 1.125rem;
+    margin: .25em;
 }
 
 p {
@@ -91,9 +94,11 @@ p {
     transition: color .3s linear;
 }
 
-.tile:hover::before {
-    color: var(--color-bg-light-hover);
-    transition: color .3s linear;
+@media (hover: hover) {
+    .tile:hover::before {
+        color: var(--color-bg-light-hover);
+        transition: color .3s linear;
+    }
 }
 
 .tile.active::before {
@@ -111,7 +116,7 @@ p {
         transform: scale(1);
     }
     50% {
-        transform: scale(1.05);
+        transform: scale(1.04);
     }
     100% {
         transform: scale(1);
@@ -120,7 +125,7 @@ p {
 
 .tile.correct::before {
     color: var(--color-correct);
-    animation: pulse 0.75s infinite alternate;
+    /* animation: pulse 0.75s infinite alternate; */
 }
 
 .tile.wrong::before {
@@ -147,20 +152,22 @@ p {
     border: none;
     padding: 10px 18px;
     color: var(--color-text-button);
-    background: linear-gradient(90deg, rgba(215,255,117,1) 0%, rgba(68,211,183,1) 100%);
+    background: var(--color-gradient-main);
     text-transform: uppercase;
     border-radius: 8px;
     font-weight: 900;
     letter-spacing: .1em;
-    background-size: calc(100% + 40px);
+    background-size: calc(100% + 40px) !important;
     background-position: 0px;
-    transition: background-position .4s ease, color .4s ease;
+    transition: background-position .4s ease, color .4s ease, transform .1s ease-in;
     outline: none;
 }
 
-#btnPrimary:hover {
-    background-position: -40px;
-    color: var(--color-bg-dark);
+@media (hover: hover) {
+    #btnPrimary:hover {
+        background-position: -40px !important;
+        color: var(--color-bg-dark);
+    }
 }
 
 /* Round info */
@@ -169,26 +176,32 @@ p {
     flex-wrap: wrap;
     justify-content: center;
     text-align: center;
-    padding: 18px 0;
+    padding: 24px 0;
     max-width: 284px;
     margin: 0 auto;
 }
 
 .countdown-wrap, .target-wrap, .points-wrap {
-    display: none;
     width: 33.33%;
-    padding: 0 18px;
+    padding: 0 12px;
     font-size: 1.5rem;
+    font-weight: 900;
+}
+
+.target-wrap, .points-wrap {
+    display: none;
 }
 
 #feedback {
     width: 100%;
-    font-size: 1.125rem;
+    font-size: 1.5rem;
+    font-weight: 900;
+    padding: 18px;
 }
 
 /* Game states */
 #hexagonGame.memorising #btnPrimary {
-    display: none;
+    transform: scale(0);
 }
 
 #hexagonGame.memorising .countdown-wrap, #hexagonGame.recall .countdown-wrap {
@@ -200,7 +213,7 @@ p {
 }
 
 #hexagonGame.recall #btnPrimary {
-    opacity: .33;
+    background: var(--color-gradient-grey);
     pointer-events: none;
 }
 
@@ -213,7 +226,16 @@ p {
 }
 
 #hexagonGame:has(.comboed) #btnPrimary {
-    opacity: 1;
+    background: var(--color-gradient-main);
     pointer-events: all;
 }
+
+#hexagonGame.correct #points {
+    color: var(--color-correct);
+}
+
+#hexagonGame.wrong #points {
+    color: var(--color-wrong);
+}
+
 

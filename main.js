@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", (event) => {
-    console.log("DOM fully loaded and parsed");
 
     // DOM elements
     let gameWrap = document.getElementById('hexagonGame');
@@ -55,9 +54,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
     // Game settings
     let TIME_MEMORY = 10;
-    let TIME_RECALL = 90;
+    let TIME_RECALL = 30;
 
+    initIdleView();
     addListeners();
+
+    function initIdleView() {
+        countdown.innerHTML = TIME_MEMORY;
+    }
 
     function addListeners() {
         // Primary button
@@ -122,9 +126,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
     function generateRound() {
         target = getRandomInt(5, 16);
         tileValues = generateRandomTileStack();
-
-        console.log(target, tileValues);
-
+        points = 0;
+        correctCombinations = [];
+        deactivateTiles();
+        
         startMemorising();
     } 
 
@@ -168,11 +173,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
             tileElements[i].innerHTML = tileValues[i];
         }
 
-        gameWrap.classList.remove('idle');
-        gameWrap.classList.add('memorising');
-
+        pointsView.innerHTML = points;
         countdown.innerHTML = TIME_MEMORY;
 
+        gameWrap.classList.remove('idle', 'results');
+        gameWrap.classList.add('memorising');
+        
         let countdownInterval = setInterval(() => {
             countdown.innerHTML -= 1; 
 
@@ -217,7 +223,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
             tileElements[i].innerHTML = tileValues[i];
         }
 
-        btnPrimary.innerHTML = 'Start';
+        btnPrimary.innerHTML = 'Play again';
 
         gameWrap.classList.remove('recall');
         gameWrap.classList.add('results');
@@ -236,7 +242,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         }
         
         // Check if the combo has already been found OR handle the new guess
-        if(correctCombinations.indexOf(submissionIndex) >= 0) {
+        if(correctCombinations.indexOf(submissionIndex) !== -1) {
             feedback = 'found';
         } else {
             // Find their guess' sum
@@ -263,11 +269,19 @@ document.addEventListener("DOMContentLoaded", (event) => {
         deactivateTiles();
 
         function arraysAreEqual(arr1, arr2) {
-            for (let i = 0; i < arr1.length; i++) {
-                if (arr1[i] !== arr2[i]) {
+            if (arr1.length !== arr2.length) {
+                return false;
+            }
+        
+            const sortedArr1 = arr1.slice().sort();
+            const sortedArr2 = arr2.slice().sort();
+        
+            for (let i = 0; i < sortedArr1.length; i++) {
+                if (sortedArr1[i] !== sortedArr2[i]) {
                     return false;
                 }
             }
+        
             return true;
         }
 
@@ -279,10 +293,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 }
             });
 
+            // Add the feedback class to the gamewrap for other UI
+            gameWrap.classList.add(feedback);
+
             // Determine the correct feedback message to show
             switch (feedback) {
                 case 'found':
-                    feedbackView.innerHTML = 'Already found.';
+                    feedbackView.innerHTML = 'Already found';
                     break;
                 case 'correct':
                     feedbackView.innerHTML = 'Correct!';
@@ -294,27 +311,24 @@ document.addEventListener("DOMContentLoaded", (event) => {
                     break;
             }
 
-            // Quickly remove the feedback classes from the tiles
+            // Quickly remove the feedback classes and feedback text
             setTimeout(() => {
                 tileElements.forEach(tile => {
                     tile.classList.remove(feedback)
                 });
-            }, 1500);            
-
-            // More slowly, remove the feedback message
-            setTimeout(() => {
+                gameWrap.classList.remove(feedback);
                 feedbackView.innerHTML = '';
-            }, 2500);
+            }, 2000);            
         }
+    }
 
-        function deactivateTiles() {
-            tileElements.forEach(tile => {
-                tile.classList.remove('active');
-            });
+    function deactivateTiles() {
+        tileElements.forEach(tile => {
+            tile.classList.remove('active');
+        });
 
-            tileGrid.classList.remove('comboed');
-            activeTiles = [];
-        }
+        tileGrid.classList.remove('comboed');
+        activeTiles = [];
     }
 
 });
